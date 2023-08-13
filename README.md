@@ -1,7 +1,7 @@
 # Car Dealership Database
 #### Using PosgreSQL and DBeaver:
 
-This project was a weekend project for Coding Temple.  The goal of the project was to create an Entity Relationship Diagram and then the DDL and DML.  While creating tables, I also ran some one off insert commands and queries, but I created some stored functions and procedures to make everyones life easier as this is a SQL only project.
+This project was a weekend project for Coding Temple.  The goal of the project was to create an Entity Relationship Diagram and then the DDL and DML.  While creating tables I ran some one off insert commands and queries, but I also created some stored functions and procedures to make everyones life easier as this is a SQL only project.
 
 ## Project description:
 In this repository there is one `.sql` file that contains both the DDL and DML.  The document has a visual divide that splits the DDL from the DML.  
@@ -11,7 +11,7 @@ The titles of all the functions are not the most intuitive, but down below you w
 !['ERD'](Car_Dealership.png)
 
 ## Installing, Running, and How to use:
-This project was done using DBeaver 23.1.4 and a PostgreSQL database.  You should be able to just pull in my `car_dealership.sql` and run it from top to bottom without any issues.  You might see some commented out blocks of code where I have some fragments of non-functional or less efficient code.
+This project was done using DBeaver 23.1.4 and a PostgreSQL database.  You should be able to just pull in my `car_dealership.sql` and run it from top to bottom without any issues.  I do not recommend hitting the 'run all' button in DBeaver, as you will be stuck sifting through dozens of windows trying to find the things you find interesting.  You might see some commented out blocks of code where I have some fragments of non-functional or less efficient code.
 
 #### Functions {#functions}
 Some aspects of my naming schemes might not seem completely intuitive without creating the front that I envisioned, but going back through to refactor it all is not really worth the time.  The `dealership_receipt` and `service_ticket` tables were meant to represent the same hub for keeping track of what needs to be paid, but the way I felt that they would be displayed down the line made sense to have these names.
@@ -31,15 +31,15 @@ Some aspects of my naming schemes might not seem completely intuitive without cr
 
 | Stored Functions | Description |
 | -------- | ------- |
-| `total_price(desired_dr_id, desired_service_id)` | Takes a dealership receipt and a service ticket ID, and calculates the total cost of the two.  If only receipt exists, enter 0 for the oen you do not have.  The hourly work cost is $70/hr. |
+| `total_price(desired_dr_id, desired_service_id)` | Takes a dealership receipt and a service ticket ID, and calculates the total cost of the two.  If only receipt exists, enter 0 for the oen you do not have.  The hourly work cost is $70/hr.  This is called internally in `create_payment`, and should probably be somehow denoted as an internal method. |
 | `query_mechanics_work(desired_mechanics_id)` | Takes a mechanics ID number and returns all the work that they have done. |
 | `query_car_work(desired_car_id)` | Takes a cars ID number and returns all the work that has been done to it. |
+| `query_salesperson_total(des_salesperson_id)` | Takes a salespersons ID number and returns the number of sales and the total amount they have sold. |
+| `show_all_cars(selector)` | Displays the dealerships inventory of cars for sale.  1 (default) is for all cars, 2 for new cars, and 3 for used cars. |
+
 
 
 ## Future Improvement:
-- Get the salesperson total sales function working.
-    - I have the query functional, but for some reason turning into a stored function is creating an error related to unexpected type. (bigint instead of integer, and typecasting doesn't seem to help)
-
 - Add a procedure to buy a car and put car in for service.
     - Instead of submitting 2 commands to both buy the car and put in a service request, put them both into a command that calls each.  Default method to get the car detailed before the car gets picked up.  Also could be used if the buyer wants to get features added or tweaked after sale.
 

@@ -208,6 +208,8 @@ CALL add_inventory('Toyota','Tacoma',2023,TRUE,30000.00,'AC, Electric Windows, N
 CALL add_inventory('Toyota','Tacoma',2013,FALSE,10000.00,'Electric Windows, Rusty Frame, Might be covered under warenty');
 CALL add_inventory('Ford','Fushion',2015,FALSE,9850.00,'Well equip');
 CALL add_inventory('VW','ID.Buzz',2023,TRUE,50000.00,'Electric Bus');
+CALL add_inventory('Ford','F-150',2023,TRUE,55000.00,'Trig ol buck');
+
 
 SELECT * FROM car;
 
@@ -350,6 +352,7 @@ SELECT * FROM car;
 -- This is essentially selling the 2023 Taco to David Williams
 CALL create_dealership_receipt(1,2,8);
 CALL create_dealership_receipt(2,3,10);
+CALL create_dealership_receipt(2,3,15);
 
 SELECT * FROM dealership_receipt;
 SELECT * FROM car;
@@ -477,33 +480,6 @@ ON car.car_id = dealership_receipt.car_id
 WHERE salesperson_id = 1
 GROUP BY salesperson_id;
 
--- Create a stored function to get total cost 
--- THIS DOESNT WORK FOR SOME REASON... WILL MOVE ON TO PULL A MECHAICS WORK
---CREATE OR REPLACE FUNCTION query_salesperson_total(
---    des_salesperson_id INTEGER
---)
---RETURNS TABLE (
---    num_sales INTEGER,
---    total_price NUMERIC
---)
---LANGUAGE plpgsql
---AS $$
---BEGIN
---    RETURN QUERY 
---    SELECT count(car.price) AS num_sales, sum(car.price) AS total_sales
---    FROM dealership_receipt
---    JOIN car
---    ON car.car_id = dealership_receipt.car_id
---    WHERE salesperson_id = des_salesperson_id
---    GROUP BY salesperson_id;
---END;
---$$;
---
---DROP FUNCTION query_salesperson_total;
---
---
---SELECT * FROM query_salesperson_total(1);
---
 SELECT * FROM mechanic_work;
 
 
@@ -575,5 +551,81 @@ $$;
 SELECT * FROM query_car_work(14);
 -- other car
 select * FROM query_car_work(12);
+
+
+SELECT * FROM car;
+SELECT * FROM dealership_receipt;
+
+
+
+-- Query for salespersons total number of sales and how much theyve sold
+CREATE OR REPLACE FUNCTION query_salesperson_total(
+    des_salesperson_id INTEGER
+)
+RETURNS TABLE (
+    num_sales INTEGER,
+    total_sales NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY 
+    SELECT count(car.price)::int AS num_sales, sum(car.price) AS total_sales
+    FROM dealership_receipt
+    JOIN car
+    ON car.car_id = dealership_receipt.car_id
+    WHERE salesperson_id = des_salesperson_id
+    GROUP BY salesperson_id;
+END;
+$$;
+
+-- DROP FUNCTION query_salesperson_total;
+
+SELECT * FROM query_salesperson_total(2);
+
+
+
+SELECT * FROM car;
+
+-- Query for cars for sale - 1 is all cards, 2 is NEW CARS, 3 is USED CARS
+CREATE OR REPLACE FUNCTION show_all_cars(
+    selector INTEGER DEFAULT 1
+)
+RETURNS TABLE (
+    car_year INTEGER,
+    make VARCHAR,
+    model VARCHAR,
+    features VARCHAR,
+    price NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF selector = 1 THEN
+        RETURN QUERY
+        SELECT c.car_year, c.make, c.model, c.features, c.price
+        FROM car c
+        WHERE for_sale = TRUE;
+    ELSEIF selector = 2 THEN
+        RETURN QUERY
+        SELECT c.car_year, c.make, c.model, c.features, c.price
+        FROM car c
+        WHERE for_sale = TRUE AND new_car = TRUE;
+    ELSE 
+        RETURN QUERY
+        SELECT c.car_year, c.make, c.model, c.features, c.price
+        FROM car c
+        WHERE for_sale = TRUE AND new_car = FALSE;
+    END IF;
+END;
+$$;
+
+-- DROP FUNCTION show_all_cars;
+
+SELECT * FROM show_all_cars();
+SELECT * FROM show_all_cars(2);
+SELECT * FROM show_all_cars(3);
+
+
 
 
