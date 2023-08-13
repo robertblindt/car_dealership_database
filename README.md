@@ -6,14 +6,14 @@ This project was a weekend project for Coding Temple.  The goal of the project w
 ## Project description:
 In this repository there is one `.sql` file that contains both the DDL and DML.  The document has a visual divide that splits the DDL from the DML.  
 
-The titles of all the functions are not the most intuitive, but down below you will see a [table](#functions) with a thorough description of each function.
+The titles of all the functions are not the most intuitive, but down below you will see a [table](#Functions) with a thorough description of each function.
 
 !['ERD'](Car_Dealership.png)
 
 ## Installing, Running, and How to use:
 This project was done using DBeaver 23.1.4 and a PostgreSQL database.  You should be able to just pull in my `car_dealership.sql` and run it from top to bottom without any issues.  I do not recommend hitting the 'run all' button in DBeaver, as you will be stuck sifting through dozens of windows trying to find the things you find interesting.  You might see some commented out blocks of code where I have some fragments of non-functional or less efficient code.
 
-#### Functions {#functions}
+####Functions
 Some aspects of my naming schemes might not seem completely intuitive without creating the front that I envisioned, but going back through to refactor it all is not really worth the time.  The `dealership_receipt` and `service_ticket` tables were meant to represent the same hub for keeping track of what needs to be paid, but the way I felt that they would be displayed down the line made sense to have these names.
 | Stored Procedures | Description |
 | -------- | ------- |
